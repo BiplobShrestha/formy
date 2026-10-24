@@ -11,7 +11,9 @@ export default function Navbar() {
       <div className="nav-links">
         {user ? (
           <>
-            <Link to={homePathFor(user.role)}>Dashboard</Link>
+            {user.role === "customer" && <Link to="/forms">Forms</Link>}
+            <Link to={homePathFor(user.role)}>{user.role === "customer" ? "My applications" : "Applications"}</Link>
+            {user.role === "admin" && <Link to="/admin/notices">Notices</Link>}
             <span className="muted">{user.name} ({user.role})</span>
             <button
               onClick={() => {

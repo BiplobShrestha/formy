@@ -6,10 +6,10 @@ import NoticePopup from "../components/NoticePopup.jsx";
 
 const steps = [
   "Create an account with your name, phone number and a password.",
-  "Log in, open Forms and choose the service you need.",
-  "Fill in the form and upload clear photos of your documents.",
-  "Track your application status on your dashboard. It starts as Pending.",
-  "When it is reviewed, you get a letter with the decision. If it is rejected, the reason is written in it and you can fix and resend.",
+  "Log in, open Forms and choose the service you need (citizenship, passport or relationship verification).",
+  "Fill in the form and upload clear photos of your documents. We shrink the photos for you.",
+  "Track your application on your dashboard. It starts as Pending, then goes to the government officer.",
+  "When a decision is made, download your decision letter as a PDF. If it is rejected, the reason is written in it and you can edit and resubmit.",
 ];
 
 export default function Landing() {

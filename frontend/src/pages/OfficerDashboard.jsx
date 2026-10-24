@@ -1,12 +1,26 @@
-import { useAuth } from "../context/AuthContext.jsx";
+import { useState } from "react";
+import { api } from "../api.js";
+import { useLoad } from "../hooks.js";
+import ApplicationList from "../components/ApplicationList.jsx";
 
 export default function OfficerDashboard() {
-  const { user } = useAuth();
+  const [tab, setTab] = useState("pending");
+  const { data, error, loading } = useLoad(() => api(`/api/officer/applications?tab=${tab}`), [tab]);
+
   return (
-    <div className="page">
-      <h1>Officer: {user.name}</h1>
-      <p>Applications forwarded by the admin will appear here.</p>
-      <p className="muted">Officer review arrives in v4.</p>
+    <div className="page wide">
+      <h1>Officer</h1>
+      <div className="tabs">
+        <button className={tab === "pending" ? "tab active" : "tab"} onClick={() => setTab("pending")}>
+          Pending{data ? ` (${data.counts.pending})` : ""}
+        </button>
+        <button className={tab === "decided" ? "tab active" : "tab"} onClick={() => setTab("decided")}>
+          Decided{data ? ` (${data.counts.decided})` : ""}
+        </button>
+      </div>
+      {loading && <p className="muted">Loading...</p>}
+      {error && <p className="error">{error}</p>}
+      {data && <ApplicationList applications={data.applications} basePath="/officer/applications" showApplicant />}
     </div>
   );
 }
