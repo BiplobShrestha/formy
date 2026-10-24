@@ -15,15 +15,15 @@ export default function EditApplication() {
 
   return (
     <div className="page">
-      <p>
-        <Link to={`/applications/${id}`}>Back</Link>
-      </p>
+      <Link className="back" to={`/applications/${id}`}>Back to the application</Link>
       {loading && <p className="muted">Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <div className="box box-bad">{error}</div>}
       {data && data.application.status !== "rejected" && <p>Only rejected applications can be edited.</p>}
       {data && data.application.status === "rejected" && (
         <>
-          <h1>Edit and resubmit</h1>
+          <div className="page-head">
+            <h1>Edit and resubmit</h1>
+          </div>
           <div className="box box-bad">
             <strong>Reason for rejection</strong>
             <p>{data.application.rejectionReason}</p>

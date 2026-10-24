@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, downloadFile } from "../api.js";
 import { useLoad } from "../hooks.js";
-import ApplicationView from "../components/ApplicationView.jsx";
+import ApplicationView, { History } from "../components/ApplicationView.jsx";
 import RecordCompare from "../components/RecordCompare.jsx";
+import Tracker from "../components/Tracker.jsx";
 
 export default function OfficerReview() {
   const { id } = useParams();
@@ -46,45 +47,56 @@ export default function OfficerReview() {
 
   return (
     <div className="page wide">
-      <p>
-        <Link to="/officer">Back to applications</Link>
-      </p>
+      <Link className="back" to="/officer">Back to applications</Link>
       {loading && <p className="muted">Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <div className="box box-bad">{error}</div>}
 
       {data && (
         <div className="split">
-          <div>
-            <ApplicationView application={data.application} service={data.service} />
+          <div className="stack">
+            <div className="panel">
+              <ApplicationView application={data.application} service={data.service} />
+            </div>
+            <div className="panel">
+              <h3>History</h3>
+              <History application={data.application} />
+            </div>
           </div>
-          <div>
-            <h2>Citizen record</h2>
-            <RecordCompare match={data.match} />
-
-            <h3 className="section">Letter</h3>
-            <button onClick={letter} disabled={busy}>
-              Download formal letter with documents (PDF)
-            </button>
+          <div className="stack sticky">
+            <div className="panel">
+              <h3>Progress</h3>
+              <Tracker status={data.application.status} rejectedBy={data.application.rejectedBy} />
+            </div>
+            <div className="panel">
+              <h2>Citizen record</h2>
+              <RecordCompare match={data.match} />
+            </div>
+            <div className="panel">
+              <h3>Letter</h3>
+              <button className="secondary" onClick={letter} disabled={busy}>
+                Download formal letter with documents (PDF)
+              </button>
+            </div>
 
             {waiting && (
-              <>
-                <h3 className="section">Your decision</h3>
-                <label>Note (optional)</label>
-                <input value={note} onChange={(e) => setNote(e.target.value)} />
-                <div style={{ marginTop: 8 }}>
-                  <button onClick={verify} disabled={busy}>
-                    Verify (approve)
+              <div className="panel">
+                <h2>Your decision</h2>
+                <div className="field">
+                  <label htmlFor="onote">Note (optional)</label>
+                  <input id="onote" value={note} onChange={(e) => setNote(e.target.value)} />
+                </div>
+                <button onClick={verify} disabled={busy}>Verify (approve)</button>
+
+                <h3 className="section">Or reject with a reason</h3>
+                <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason shown to the customer" aria-label="Reason for rejection" />
+                <div style={{ marginTop: 10 }}>
+                  <button className="danger" onClick={reject} disabled={busy || reason.trim().length < 5}>
+                    Reject (falsify)
                   </button>
                 </div>
-
-                <label style={{ marginTop: 16 }}>Or reject with a reason</label>
-                <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason shown to the customer" />
-                <button className="danger" onClick={reject} disabled={busy || reason.trim().length < 5}>
-                  Reject (falsify)
-                </button>
-              </>
+              </div>
             )}
-            {msg && <p className="error">{msg}</p>}
+            {msg && <div className="box box-bad">{msg}</div>}
           </div>
         </div>
       )}

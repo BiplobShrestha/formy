@@ -6,15 +6,33 @@ function isVisible(f, data) {
   return !f.showIf || data[f.showIf.field] === f.showIf.equals;
 }
 
-// Read only view of an application: details, documents, rejection reason and history
-export default function ApplicationView({ application, service, showHistory = true }) {
+export function History({ application }) {
+  return (
+    <table className="history-table">
+      <tbody>
+        {[...(application.history || [])].reverse().map((h, i) => (
+          <tr key={i}>
+            <td className="muted nowrap">{fmtDateTime(h.at)}</td>
+            <td>
+              <strong>{h.action}</strong> <span className="muted">by {h.actor}</span>
+              {h.note && <div>{h.note}</div>}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+// Read only view of an application: title, status, rejection reason, details and documents
+export default function ApplicationView({ application, service }) {
   const data = application.data || {};
 
   return (
     <div>
-      <div className="row between">
+      <div className="title-row">
         <div>
-          <h2 style={{ margin: 0 }}>{application.serviceTitle}</h2>
+          <h2>{application.serviceTitle}</h2>
           <span className="muted">Reference {application.ref}</span>
         </div>
         <StatusBadge status={application.status} />
@@ -49,25 +67,6 @@ export default function ApplicationView({ application, service, showHistory = tr
             </div>
           );
         })}
-
-      {showHistory && (
-        <>
-          <h3 className="section">History</h3>
-          <table>
-            <tbody>
-              {[...(application.history || [])].reverse().map((h, i) => (
-                <tr key={i}>
-                  <td className="muted nowrap">{fmtDateTime(h.at)}</td>
-                  <td>
-                    <strong>{h.action}</strong> <span className="muted">by {h.actor}</span>
-                    {h.note && <div>{h.note}</div>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
     </div>
   );
 }

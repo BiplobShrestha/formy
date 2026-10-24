@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { useLoad } from "../hooks.js";
 import ApplicationList from "../components/ApplicationList.jsx";
+import StatCards from "../components/StatCards.jsx";
 
 const TABS = [
   ["pending", "Pending"],
@@ -21,12 +22,25 @@ export default function AdminDashboard() {
 
   return (
     <div className="page wide">
-      <div className="row between">
-        <h1>Admin</h1>
-        <Link to="/admin/notices">
-          <button>Manage notices</button>
-        </Link>
+      <div className="page-head">
+        <div>
+          <h1>Admin</h1>
+          <p>Check each application against the citizen records, then forward it or reject it.</p>
+        </div>
+        <Link className="btn secondary" to="/admin/notices">Manage notices</Link>
       </div>
+
+      {data && (
+        <StatCards
+          items={[
+            { label: "Waiting for you", value: data.counts.pending, tone: "pending" },
+            { label: "With officer", value: data.counts.forwarded, tone: "forwarded" },
+            { label: "Approved", value: data.counts.approved, tone: "approved" },
+            { label: "Rejected", value: data.counts.rejected, tone: "rejected" },
+          ]}
+        />
+      )}
+
       <div className="tabs">
         {TABS.map(([key, label]) => (
           <button key={key} className={tab === key ? "tab active" : "tab"} onClick={() => setTab(key)}>
@@ -36,8 +50,15 @@ export default function AdminDashboard() {
         ))}
       </div>
       {loading && <p className="muted">Loading...</p>}
-      {error && <p className="error">{error}</p>}
-      {data && <ApplicationList applications={data.applications} basePath="/admin/applications" showApplicant />}
+      {error && <div className="box box-bad">{error}</div>}
+      {data && (
+        <ApplicationList
+          applications={data.applications}
+          basePath="/admin/applications"
+          showApplicant
+          empty={<p className="muted" style={{ margin: 0 }}>No applications in this list.</p>}
+        />
+      )}
     </div>
   );
 }

@@ -96,62 +96,79 @@ export default function DynamicForm({ service, initial, submitLabel, onSubmit })
     }
   }
 
-  return (
-    <form onSubmit={submit} noValidate>
-      {formError && <p className="error">{formError}</p>}
+  // Group the visible fields under their section headings
+  const groups = [];
+  for (const f of service.fields) {
+    if (!isVisible(f, values)) continue;
+    if (f.section || groups.length === 0) groups.push({ title: f.section || "Details", fields: [] });
+    groups[groups.length - 1].fields.push(f);
+  }
 
-      {service.fields.map((f) => {
-        if (!isVisible(f, values)) return null;
-        const err = errors[f.name];
-        return (
-          <div key={f.name}>
-            {f.section && <h3 className="section">{f.section}</h3>}
-            <div className="field">
-              <label htmlFor={f.name}>{f.label}</label>
+  function renderField(f) {
+    const err = errors[f.name];
+    return (
+      <div key={f.name} className={`field ${err ? "invalid" : ""} ${f.type === "file" ? "field-wide" : ""}`}>
+        <label htmlFor={f.name}>{f.label}</label>
 
-              {f.type === "select" ? (
-                <select id={f.name} value={values[f.name] || ""} onChange={(e) => setValue(f.name, e.target.value)}>
-                  <option value="">Choose...</option>
-                  {f.options.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              ) : f.type === "file" ? (
-                <div>
-                  {values[f.name] && <SecureImage fileId={values[f.name]} alt={f.label} />}
-                  <input
-                    id={f.name}
-                    type="file"
-                    accept="image/png,image/jpeg"
-                    onChange={(e) => pickFile(f, e)}
-                    disabled={busyField === f.name}
-                  />
-                  {busyField === f.name && <span className="muted"> Uploading...</span>}
-                  {values[f.name] && busyField !== f.name && <span className="muted"> Uploaded. Choose another file to replace it.</span>}
-                </div>
-              ) : (
-                <input
-                  id={f.name}
-                  type={f.type === "date" ? "date" : f.type === "number" ? "number" : "text"}
-                  inputMode={f.type === "phone" ? "numeric" : undefined}
-                  max={f.type === "date" ? today : f.max}
-                  min={f.type === "number" ? f.min : undefined}
-                  value={values[f.name] ?? ""}
-                  onChange={(e) => setValue(f.name, e.target.value)}
-                />
-              )}
-
-              {f.hint && <span className="muted">{f.hint}</span>}
-              {f.type === "file" && <span className="muted">JPG or PNG photo, up to {service.maxFileKB} KB (we shrink it for you)</span>}
-              {err && <span className="error">{err}</span>}
+        {f.type === "select" ? (
+          <select id={f.name} value={values[f.name] || ""} onChange={(e) => setValue(f.name, e.target.value)}>
+            <option value="">Choose...</option>
+            {f.options.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </select>
+        ) : f.type === "file" ? (
+          <div className="upload">
+            {values[f.name] && <SecureImage fileId={values[f.name]} alt={f.label} />}
+            <div>
+              <input
+                id={f.name}
+                type="file"
+                accept="image/png,image/jpeg"
+                onChange={(e) => pickFile(f, e)}
+                disabled={busyField === f.name}
+              />
+              {busyField === f.name && <div className="muted">Uploading...</div>}
+              {values[f.name] && busyField !== f.name && <div className="muted">Uploaded. Choose another file to replace it.</div>}
             </div>
           </div>
-        );
-      })}
+        ) : (
+          <input
+            id={f.name}
+            type={f.type === "date" ? "date" : f.type === "number" ? "number" : "text"}
+            inputMode={f.type === "phone" ? "numeric" : undefined}
+            max={f.type === "date" ? today : f.max}
+            min={f.type === "number" ? f.min : undefined}
+            value={values[f.name] ?? ""}
+            onChange={(e) => setValue(f.name, e.target.value)}
+          />
+        )}
 
-      <button disabled={saving || !!busyField}>{saving ? "Sending..." : submitLabel}</button>
+        {f.hint && <span className="muted">{f.hint}</span>}
+        {f.type === "file" && <span className="muted">JPG or PNG photo, up to {service.maxFileKB} KB. We shrink big photos for you.</span>}
+        {err && <span className="error">{err}</span>}
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} noValidate>
+      {formError && <div className="box box-bad">{formError}</div>}
+
+      {groups.map((g) => (
+        <fieldset key={g.title} className="form-section">
+          <legend>{g.title}</legend>
+          <div className="form-grid">{g.fields.map(renderField)}</div>
+        </fieldset>
+      ))}
+
+      <div className="form-actions">
+        <button className="big" disabled={saving || !!busyField}>
+          {saving ? "Sending..." : submitLabel}
+        </button>
+      </div>
     </form>
   );
 }

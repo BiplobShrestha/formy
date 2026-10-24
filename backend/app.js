@@ -12,6 +12,8 @@ const officerRoutes = require("./routes/officer");
 const { FRONTEND_URL } = process.env;
 
 const app = express();
+// Render sits behind a proxy, so use the real client address for login throttling
+app.set("trust proxy", 1);
 
 app.use(
   cors({
@@ -21,7 +23,7 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Formy API is running (v2)");
+  res.send("Formy API is running (v3)");
 });
 
 app.use("/api/auth", authRoutes);

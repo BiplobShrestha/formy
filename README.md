@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v2 (forms, applications, admin review with record matching, officer review, PDF letters, notices)
+Version: v3 (v2 plus a full design pass, change password, login rate limit, photo slots)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -33,3 +33,11 @@ No frontend change is needed, the forms are built from that config.
 
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
+
+## New in v3
+
+- Design: new look on every page, works on phones. Progress tracker on each application.
+- Account page: every user can change their own password (use it to replace the seeded admin and officer passwords).
+- Login rate limit: 8 wrong attempts in 15 minutes locks that phone number for 15 minutes.
+- Photo slots: put your own images in frontend/public/images/ as hero.jpg (landing top) and guide.jpg (How it works). Until then a placeholder shows.
+- No new environment variables.

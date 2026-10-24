@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useLoad } from "../hooks.js";
@@ -19,13 +19,18 @@ export default function ApplyForm() {
 
   return (
     <div className="page">
+      <Link className="back" to="/forms">Back to forms</Link>
       {loading && <p className="muted">Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <div className="box box-bad">{error}</div>}
       {data && !service && <p>Service not found.</p>}
       {service && (
         <>
-          <h1>{service.title}</h1>
-          <p>{service.description} All fields are required unless marked otherwise.</p>
+          <div className="page-head">
+            <div>
+              <h1>{service.title}</h1>
+              <p>{service.description} Every field is required unless it says otherwise.</p>
+            </div>
+          </div>
           <DynamicForm
             service={service}
             initial={{ fullName: user.name, phone: user.phone }}

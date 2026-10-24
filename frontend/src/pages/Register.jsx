@@ -26,20 +26,30 @@ export default function Register() {
   }
 
   return (
-    <div className="page narrow">
-      <h1>Register</h1>
-      <form onSubmit={submit}>
-        <label>Full name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} required />
-        <label>Phone number</label>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="numeric" required />
-        <label>Password (at least 6 characters)</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        {error && <p className="error">{error}</p>}
-        <button disabled={busy}>{busy ? "Creating account..." : "Create account"}</button>
-      </form>
-      {busy && <p className="muted">The first request can take up to a minute while the server wakes up.</p>}
-      <p>Already registered? <Link to="/login">Login</Link></p>
+    <div className="auth">
+      <div className="panel">
+        <h1>Create an account</h1>
+        <form onSubmit={submit}>
+          <div className="field">
+            <label htmlFor="name">Full name</label>
+            <input id="name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" required />
+          </div>
+          <div className="field">
+            <label htmlFor="phone">Phone number</label>
+            <input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="numeric" autoComplete="username" required />
+            <span className="muted">10 digits starting with 97 or 98. You will log in with this number.</span>
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" required />
+            <span className="muted">At least 6 characters.</span>
+          </div>
+          {error && <div className="box box-bad">{error}</div>}
+          <button className="big" disabled={busy}>{busy ? "Creating account..." : "Create account"}</button>
+        </form>
+        {busy && <p className="muted" style={{ marginTop: 12 }}>The first request can take up to a minute while the server wakes up.</p>}
+        <p style={{ marginTop: 20, marginBottom: 0 }}>Already registered? <Link to="/login">Log in</Link></p>
+      </div>
     </div>
   );
 }

@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, downloadFile } from "../api.js";
 import { useLoad } from "../hooks.js";
-import ApplicationView from "../components/ApplicationView.jsx";
+import ApplicationView, { History } from "../components/ApplicationView.jsx";
 import RecordCompare from "../components/RecordCompare.jsx";
+import Tracker from "../components/Tracker.jsx";
 
 const PRESETS = [
   "Name does not match the records.",
@@ -73,71 +74,91 @@ export default function AdminReview() {
 
   return (
     <div className="page wide">
-      <p>
-        <Link to="/admin">Back to applications</Link>
-      </p>
+      <Link className="back" to="/admin">Back to applications</Link>
       {loading && <p className="muted">Loading...</p>}
-      {error && <p className="error">{error}</p>}
+      {error && <div className="box box-bad">{error}</div>}
 
       {data && (
         <div className="split">
-          <div>
-            <ApplicationView application={data.application} service={data.service} />
+          <div className="stack">
+            <div className="panel">
+              <ApplicationView application={data.application} service={data.service} />
+            </div>
+            <div className="panel">
+              <h3>History</h3>
+              <History application={data.application} />
+            </div>
           </div>
 
-          <div>
-            <h2>Citizen record</h2>
-            <RecordCompare match={data.match} />
+          <div className="stack sticky">
+            <div className="panel">
+              <h3>Progress</h3>
+              <Tracker status={data.application.status} rejectedBy={data.application.rejectedBy} />
+            </div>
+
+            <div className="panel">
+              <h2>Citizen record</h2>
+              <RecordCompare match={data.match} />
+
+              {pending && (
+                <>
+                  <h3 className="section">Search the records</h3>
+                  <form onSubmit={search} className="search-row">
+                    <input
+                      value={q}
+                      onChange={(e) => setQ(e.target.value)}
+                      placeholder="Name, phone or citizenship number"
+                      aria-label="Search the records"
+                    />
+                    <button className="secondary" disabled={busy}>Search</button>
+                  </form>
+                  {results && results.length === 0 && <p className="muted" style={{ marginTop: 8 }}>No records found.</p>}
+                  {results && results.length > 0 && (
+                    <div className="table-wrap" style={{ marginTop: 10 }}>
+                      <table>
+                        <tbody>
+                          {results.map((r) => (
+                            <tr key={r.id}>
+                              <td>
+                                {r.fullName}
+                                <div className="muted">
+                                  {r.phone} | {r.citizenshipNumber}
+                                </div>
+                              </td>
+                              <td style={{ textAlign: "right" }}>
+                                <button className="secondary" onClick={() => pickRecord(r.id)} disabled={busy}>
+                                  Use this record
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
 
             {pending && (
-              <>
-                <h3 className="section">Search the records</h3>
-                <form onSubmit={search} className="row">
-                  <input
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Name, phone or citizenship number"
-                    style={{ flex: 1 }}
-                  />
-                  <button disabled={busy}>Search</button>
-                </form>
-                {results && results.length === 0 && <p className="muted">No records found.</p>}
-                {results && results.length > 0 && (
-                  <table>
-                    <tbody>
-                      {results.map((r) => (
-                        <tr key={r.id}>
-                          <td>
-                            {r.fullName}
-                            <div className="muted">
-                              {r.phone} | {r.citizenshipNumber}
-                            </div>
-                          </td>
-                          <td>
-                            <button onClick={() => pickRecord(r.id)} disabled={busy}>
-                              Use this record
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )}
+              <div className="panel">
+                <h2>Decision</h2>
+                {mismatch && <div className="box box-warn">Some details do not match. Check them before you forward.</div>}
 
-                <h3 className="section">Decision</h3>
-                {mismatch && <p className="box box-warn">Some details do not match. Check them before forwarding.</p>}
-                <label>Note for the officer (optional)</label>
-                <input value={note} onChange={(e) => setNote(e.target.value)} />
-                <div className="row" style={{ marginTop: 8 }}>
+                <div className="field">
+                  <label htmlFor="note">Note for the officer (optional)</label>
+                  <input id="note" value={note} onChange={(e) => setNote(e.target.value)} />
+                </div>
+                <div className="row">
                   <button onClick={forward} disabled={busy || !data.match.record}>
                     Verify and forward to officer
                   </button>
-                  <button onClick={previewLetter} disabled={busy}>
+                  <button className="secondary" onClick={previewLetter} disabled={busy}>
                     Preview officer letter (PDF)
                   </button>
                 </div>
 
-                <label style={{ marginTop: 16 }}>Or reject with a reason</label>
+                <h3 className="section">Or reject with a reason</h3>
                 <div className="chips">
                   {PRESETS.map((p) => (
                     <button key={p} type="button" className="chip" onClick={() => setReason((r) => (r ? `${r} ${p}` : p))}>
@@ -145,31 +166,36 @@ export default function AdminReview() {
                     </button>
                   ))}
                 </div>
-                <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason shown to the customer" />
-                <button className="danger" onClick={reject} disabled={busy || reason.trim().length < 5}>
-                  Reject application
-                </button>
-              </>
+                <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason shown to the customer" aria-label="Reason for rejection" />
+                <div style={{ marginTop: 10 }}>
+                  <button className="danger" onClick={reject} disabled={busy || reason.trim().length < 5}>
+                    Reject application
+                  </button>
+                </div>
+              </div>
             )}
 
             {!pending && (
-              <div style={{ marginTop: 16 }}>
-                <button onClick={previewLetter} disabled={busy}>
-                  Download officer letter (PDF)
-                </button>
-                {(data.application.status === "approved" || data.application.status === "rejected") && (
-                  <button
-                    style={{ marginLeft: 8 }}
-                    onClick={() =>
-                      act(() => downloadFile(`/api/applications/${id}/letter?type=customer`, `${data.application.ref}-letter.pdf`))
-                    }
-                  >
-                    Download customer letter (PDF)
+              <div className="panel">
+                <h3>Letters</h3>
+                <div className="row">
+                  <button className="secondary" onClick={previewLetter} disabled={busy}>
+                    Download officer letter (PDF)
                   </button>
-                )}
+                  {(data.application.status === "approved" || data.application.status === "rejected") && (
+                    <button
+                      className="secondary"
+                      onClick={() =>
+                        act(() => downloadFile(`/api/applications/${id}/letter?type=customer`, `${data.application.ref}-letter.pdf`))
+                      }
+                    >
+                      Download customer letter (PDF)
+                    </button>
+                  )}
+                </div>
               </div>
             )}
-            {msg && <p className="error">{msg}</p>}
+            {msg && <div className="box box-bad">{msg}</div>}
           </div>
         </div>
       )}

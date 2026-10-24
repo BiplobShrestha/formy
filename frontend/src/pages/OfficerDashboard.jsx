@@ -2,6 +2,7 @@ import { useState } from "react";
 import { api } from "../api.js";
 import { useLoad } from "../hooks.js";
 import ApplicationList from "../components/ApplicationList.jsx";
+import StatCards from "../components/StatCards.jsx";
 
 export default function OfficerDashboard() {
   const [tab, setTab] = useState("pending");
@@ -9,7 +10,20 @@ export default function OfficerDashboard() {
 
   return (
     <div className="page wide">
-      <h1>Officer</h1>
+      <div className="page-head">
+        <div>
+          <h1>Officer</h1>
+          <p>Applications that the admin has checked and forwarded to you.</p>
+        </div>
+      </div>
+      {data && (
+        <StatCards
+          items={[
+            { label: "Waiting for your decision", value: data.counts.pending, tone: "forwarded" },
+            { label: "Decided", value: data.counts.decided, tone: "approved" },
+          ]}
+        />
+      )}
       <div className="tabs">
         <button className={tab === "pending" ? "tab active" : "tab"} onClick={() => setTab("pending")}>
           Pending{data ? ` (${data.counts.pending})` : ""}
@@ -19,8 +33,15 @@ export default function OfficerDashboard() {
         </button>
       </div>
       {loading && <p className="muted">Loading...</p>}
-      {error && <p className="error">{error}</p>}
-      {data && <ApplicationList applications={data.applications} basePath="/officer/applications" showApplicant />}
+      {error && <div className="box box-bad">{error}</div>}
+      {data && (
+        <ApplicationList
+          applications={data.applications}
+          basePath="/officer/applications"
+          showApplicant
+          empty={<p className="muted" style={{ margin: 0 }}>No applications in this list.</p>}
+        />
+      )}
     </div>
   );
 }

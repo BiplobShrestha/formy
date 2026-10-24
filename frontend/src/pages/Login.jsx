@@ -25,18 +25,24 @@ export default function Login() {
   }
 
   return (
-    <div className="page narrow">
-      <h1>Login</h1>
-      <form onSubmit={submit}>
-        <label>Phone number</label>
-        <input value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="numeric" required />
-        <label>Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        {error && <p className="error">{error}</p>}
-        <button disabled={busy}>{busy ? "Logging in..." : "Login"}</button>
-      </form>
-      {busy && <p className="muted">The first request can take up to a minute while the server wakes up.</p>}
-      <p>No account? <Link to="/register">Register</Link></p>
+    <div className="auth">
+      <div className="panel">
+        <h1>Log in</h1>
+        <form onSubmit={submit}>
+          <div className="field">
+            <label htmlFor="phone">Phone number</label>
+            <input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="numeric" autoComplete="username" required />
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
+          </div>
+          {error && <div className="box box-bad">{error}</div>}
+          <button className="big" disabled={busy}>{busy ? "Logging in..." : "Log in"}</button>
+        </form>
+        {busy && <p className="muted" style={{ marginTop: 12 }}>The first request can take up to a minute while the server wakes up.</p>}
+        <p style={{ marginTop: 20, marginBottom: 0 }}>New here? <Link to="/register">Create an account</Link></p>
+      </div>
     </div>
   );
 }
