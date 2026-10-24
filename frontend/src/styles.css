@@ -220,13 +220,14 @@ tbody tr:hover td { background: #fafbfd; }
 .hero-lead { font-size: 1.15rem; color: var(--ink-2); margin-bottom: 28px; }
 .hero-note { margin-top: 18px; font-size: 14px; color: var(--muted); }
 .hero-visual { position: relative; }
-.hero-visual .photo { width: 100%; aspect-ratio: 4 / 3; border-radius: var(--radius-lg); }
+.hero-visual .photo { width: 100%; aspect-ratio: 1 / 1; object-position: 50% 30%; border-radius: var(--radius-lg); }
 .ticket { position: absolute; left: -24px; bottom: -28px; width: min(420px, 92%); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-lg); padding: 14px 18px 8px; box-shadow: 0 10px 30px rgba(20, 33, 61, .16); }
 .ticket-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 8px; font-size: 13px; }
 .ticket-top strong { font-size: 14px; }
 @media (max-width: 900px) {
   .hero-inner { grid-template-columns: 1fr; padding: 36px 20px 56px; gap: 32px; }
-  .ticket { left: 12px; right: 12px; width: auto; bottom: -36px; }
+  .hero-visual .photo { aspect-ratio: 4 / 3; }
+  .ticket { position: static; width: auto; margin-top: 14px; }
 }
 .photo { object-fit: cover; display: block; background: #dde4f0; }
 .photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; padding: 24px; color: var(--ink-2); border: 2px dashed var(--line-strong); background: repeating-linear-gradient(135deg, #eef2f9, #eef2f9 12px, #e6ecf6 12px, #e6ecf6 24px); font-size: 14px; }

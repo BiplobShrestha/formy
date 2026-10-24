@@ -39,5 +39,5 @@ No frontend change is needed, the forms are built from that config.
 - Design: new look on every page, works on phones. Progress tracker on each application.
 - Account page: every user can change their own password (use it to replace the seeded admin and officer passwords).
 - Login rate limit: 8 wrong attempts in 15 minutes locks that phone number for 15 minutes.
-- Photo slots: put your own images in frontend/public/images/ as hero.jpg (landing top) and guide.jpg (How it works). Until then a placeholder shows.
+- Photos: hero.jpg and guide.jpg are already in frontend/public/images/. Replace them with other photos of the same names any time.
 - No new environment variables.
