@@ -25,7 +25,6 @@ export default function AdminDashboard() {
       <div className="page-head">
         <div>
           <h1>Admin</h1>
-          <p>Check each application against the citizen records, then forward it or reject it.</p>
         </div>
         <Link className="btn secondary" to="/admin/notices">Manage notices</Link>
       </div>

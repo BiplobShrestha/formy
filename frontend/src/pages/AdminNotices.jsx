@@ -34,7 +34,6 @@ export default function AdminNotices() {
       <div className="page-head">
         <div>
           <h1>Notices</h1>
-          <p>Active notices show in a popup and on the landing page.</p>
         </div>
       </div>
 

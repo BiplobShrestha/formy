@@ -7,8 +7,7 @@ export default function RecordCompare({ match }) {
   return (
     <div>
       <p className={`box ${level === "full" ? "box-good" : "box-warn"}`}>
-        {level === "full" ? "Everything matches the record." : "Some details do not match the record."}{" "}
-        <span className="muted">({source === "manual" ? "chosen by admin" : "found automatically"})</span>
+        {level === "full" ? "Everything matches the record." : "Some details do not match the record."}
       </p>
       <div className="table-wrap">
         <table>

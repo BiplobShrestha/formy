@@ -60,9 +60,53 @@ function publicRecord(r) {
   };
 }
 
+async function recordByCz(number) {
+  const n = String(number || "").trim();
+  if (!n) return null;
+  return CitizenRecord.findOne({ citizenshipNumber: n });
+}
+
+// The documents the admin must check by eye, one block per person.
+// Each block pairs the uploaded photos with the stored record of that person.
+async function buildDocChecks(serviceKey, data, record, father, mother) {
+  const checks = [];
+  const add = (key, title, person, fields, rec, extra = {}) =>
+    checks.push({
+      key,
+      title,
+      person,
+      fields: fields.filter((f) => data[f]),
+      record: rec ? publicRecord(rec) : null,
+      problem: rec ? null : `No record found for the ${person.toLowerCase()}.`,
+      ...extra,
+    });
+
+  if (serviceKey === "citizenship") {
+    add("father", "Father's citizenship certificate", "Father", ["fatherCitizenshipDoc"], father);
+    add("mother", "Mother's citizenship certificate", "Mother", ["motherCitizenshipDoc"], mother);
+  } else if (serviceKey === "passport") {
+    add("self", "Citizenship certificate", "Applicant", ["citizenshipFrontDoc", "citizenshipBackDoc"], record);
+  } else if (serviceKey === "relationship") {
+    add("self", "Applicant's citizenship certificate", "Applicant", ["applicantCitizenshipDoc"], record);
+
+    let rel = await recordByCz(data.relativeCitizenshipNumber);
+    let problem = null;
+    const type = data.relationType;
+    if (type === "Father" || type === "Mother") {
+      const expected = type === "Father" ? father : mother;
+      if (!rel && expected) rel = expected;
+      if (rel && (!expected || String(rel._id) !== String(expected._id))) {
+        problem = `The records do not show this person as the applicant's ${type.toLowerCase()}.`;
+      }
+    }
+    add("relative", "Relative's citizenship certificate", "Relative", ["relativeCitizenshipDoc"], rel, problem ? { problem } : {});
+  }
+  return checks;
+}
+
 // Builds the match info shown on the review pages.
 // `linkedRecordId` is the record the admin picked manually (if any).
-async function buildMatch(data, linkedRecordId) {
+async function buildMatch(data, linkedRecordId, serviceKey) {
   let record = null;
   let source = null;
 
@@ -74,12 +118,17 @@ async function buildMatch(data, linkedRecordId) {
     record = await autoFindRecord(data);
     if (record) source = "auto";
   }
-  if (!record) return { record: null, source: null, rows: [], level: "none" };
+  if (!record) return { record: null, source: null, rows: [], level: "none", docChecks: [] };
 
   const rows = compareWithRecord(data, record);
   const okCount = rows.filter((r) => r.ok).length;
   const level = okCount === rows.length ? "full" : "partial";
-  return { record: publicRecord(record), source, rows, level };
+
+  const father = await recordByCz(record.fatherCitizenshipNumber);
+  const mother = await recordByCz(record.motherCitizenshipNumber);
+  const docChecks = await buildDocChecks(serviceKey, data, record, father, mother);
+
+  return { record: publicRecord(record), source, rows, level, docChecks };
 }
 
 module.exports = { buildMatch, publicRecord, escapeRegex };

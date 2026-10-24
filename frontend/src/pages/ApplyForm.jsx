@@ -28,7 +28,7 @@ export default function ApplyForm() {
           <div className="page-head">
             <div>
               <h1>{service.title}</h1>
-              <p>{service.description} Every field is required unless it says otherwise.</p>
+              <p>{service.description}</p>
             </div>
           </div>
           <DynamicForm

@@ -51,7 +51,6 @@ export default function Account() {
           <div className="field">
             <label htmlFor="new">New password</label>
             <input id="new" type="password" value={next} onChange={(e) => setNext(e.target.value)} autoComplete="new-password" required />
-            <span className="muted">At least 6 characters.</span>
           </div>
           <div className="field">
             <label htmlFor="again">New password again</label>

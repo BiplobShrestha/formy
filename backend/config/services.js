@@ -12,7 +12,6 @@
 //   showIf    { field, equals } show (and require) this field only when another field has that value
 //   min, max  number range (number only)
 //   minAge    minimum age in years (date only)
-//   hint      small help text under the field
 //   section   starts a new heading in the form
 
 const common = [
@@ -29,7 +28,6 @@ const common = [
     name: "photo",
     label: "Passport size photo",
     type: "file",
-    hint: "Recent photo with a plain background",
     section: "Photo",
   },
 ];
@@ -42,7 +40,7 @@ const services = [
     maxFileKB: 1024,
     requestText: "issue me a Nepali citizenship certificate by descent",
     fields: [
-      ...common.slice(0, 2).map((f) => (f.name === "dob" ? { ...f, minAge: 16, hint: "You must be at least 16 years old" } : f)),
+      ...common.slice(0, 2).map((f) => (f.name === "dob" ? { ...f, minAge: 16 } : f)),
       ...common.slice(2),
       {
         name: "specialCase",
@@ -57,13 +55,11 @@ const services = [
         name: "birthProofDoc",
         label: "Proof of date of birth",
         type: "file",
-        hint: "Birth registration certificate or education certificate showing your date of birth",
       },
       {
         name: "wardApplicationDoc",
         label: "Application form certified by the ward chairperson",
         type: "file",
-        hint: "The Schedule-1 form with your photo, certified by the ward chairperson",
       },
       {
         name: "marriageCertificateDoc",
@@ -81,7 +77,6 @@ const services = [
         name: "maitiRelativeCitizenshipDoc",
         label: "Citizenship certificate of your father, mother or brother",
         type: "file",
-        hint: "From your maiti side, showing your lineage",
         showIf: { field: "specialCase", equals: "Married woman" },
       },
       {

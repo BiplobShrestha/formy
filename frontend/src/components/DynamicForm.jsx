@@ -131,7 +131,6 @@ export default function DynamicForm({ service, initial, submitLabel, onSubmit })
                 disabled={busyField === f.name}
               />
               {busyField === f.name && <div className="muted">Uploading...</div>}
-              {values[f.name] && busyField !== f.name && <div className="muted">Uploaded. Choose another file to replace it.</div>}
             </div>
           </div>
         ) : (
@@ -146,8 +145,6 @@ export default function DynamicForm({ service, initial, submitLabel, onSubmit })
           />
         )}
 
-        {f.hint && <span className="muted">{f.hint}</span>}
-        {f.type === "file" && <span className="muted">JPG or PNG photo, up to {service.maxFileKB} KB. We shrink big photos for you.</span>}
         {err && <span className="error">{err}</span>}
       </div>
     );

@@ -4,6 +4,7 @@ import { api, downloadFile } from "../api.js";
 import { useLoad } from "../hooks.js";
 import ApplicationView, { History } from "../components/ApplicationView.jsx";
 import RecordCompare from "../components/RecordCompare.jsx";
+import DocChecks from "../components/DocChecks.jsx";
 import Tracker from "../components/Tracker.jsx";
 
 export default function OfficerReview() {
@@ -71,6 +72,12 @@ export default function OfficerReview() {
               <h2>Citizen record</h2>
               <RecordCompare match={data.match} />
             </div>
+            {data.match && data.match.docChecks && data.match.docChecks.length > 0 && (
+              <div className="panel">
+                <h2>Document checks</h2>
+                <DocChecks checks={data.match.docChecks} application={data.application} />
+              </div>
+            )}
             <div className="panel">
               <h3>Letter</h3>
               <button className="secondary" onClick={letter} disabled={busy}>

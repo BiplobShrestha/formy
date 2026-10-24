@@ -12,7 +12,6 @@ export default function Forms() {
       <div className="page-head">
         <div>
           <h1>Forms</h1>
-          <p>Choose the service you need.</p>
         </div>
       </div>
       {loading && <p className="muted">Loading...</p>}

@@ -37,17 +37,14 @@ export default function Register() {
           <div className="field">
             <label htmlFor="phone">Phone number</label>
             <input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="numeric" autoComplete="username" required />
-            <span className="muted">10 digits starting with 97 or 98. You will log in with this number.</span>
           </div>
           <div className="field">
             <label htmlFor="password">Password</label>
             <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" required />
-            <span className="muted">At least 6 characters.</span>
           </div>
           {error && <div className="box box-bad">{error}</div>}
           <button className="big" disabled={busy}>{busy ? "Creating account..." : "Create account"}</button>
         </form>
-        {busy && <p className="muted" style={{ marginTop: 12 }}>The first request can take up to a minute while the server wakes up.</p>}
         <p style={{ marginTop: 20, marginBottom: 0 }}>Already registered? <Link to="/login">Log in</Link></p>
       </div>
     </div>

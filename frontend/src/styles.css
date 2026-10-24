@@ -82,7 +82,7 @@ a:hover { color: var(--primary-hover); }
 .nav-inner { max-width: 1180px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-head); font-weight: 700; font-size: 1.35rem; color: var(--ink); text-decoration: none; }
 .brand:hover { color: var(--ink); }
-.brand svg { width: 30px; height: 30px; }
+.brand svg, .brand img { width: 30px; height: 30px; object-fit: contain; }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-link { color: var(--ink-2); text-decoration: none; padding: 8px 12px; border-radius: var(--radius); font-weight: 500; font-size: 15px; }
 .nav-link:hover { background: var(--paper); color: var(--ink); }
@@ -298,3 +298,13 @@ tbody tr:hover td { background: #fafbfd; }
   .table-wrap td, .table-wrap th { padding: 8px 7px; font-size: 13px; }
   .table-wrap td { word-break: break-word; }
 }
+
+/* ---------- Document checks ---------- */
+.docheck { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 16px 18px; }
+.docheck h3 { margin: 0 0 10px; }
+.docheck-bad { border-color: var(--bad-line); }
+.docheck-record { margin-bottom: 12px; }
+.docheck-photos { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.docheck-photos .thumb { max-width: 100%; max-height: 260px; }
+.tick { display: flex; align-items: center; gap: 10px; font-weight: 600; cursor: pointer; padding: 10px 12px; background: var(--primary-soft); border-radius: var(--radius); }
+.tick input { width: 18px; height: 18px; flex: none; margin: 0; }

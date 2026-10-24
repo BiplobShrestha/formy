@@ -16,7 +16,6 @@ export default function CustomerDashboard() {
       <div className="page-head">
         <div>
           <h1>Welcome, {user.name}</h1>
-          <p>Your applications and their progress.</p>
         </div>
         <Link className="btn" to="/forms">New application</Link>
       </div>
@@ -41,7 +40,6 @@ export default function CustomerDashboard() {
           empty={
             <>
               <h3>You have not applied yet</h3>
-              <p className="muted">Choose a service, fill in the form and upload your documents.</p>
               <Link className="btn" to="/forms">Choose a service</Link>
             </>
           }

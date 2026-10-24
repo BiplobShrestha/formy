@@ -40,7 +40,6 @@ export default function Login() {
           {error && <div className="box box-bad">{error}</div>}
           <button className="big" disabled={busy}>{busy ? "Logging in..." : "Log in"}</button>
         </form>
-        {busy && <p className="muted" style={{ marginTop: 12 }}>The first request can take up to a minute while the server wakes up.</p>}
         <p style={{ marginTop: 20, marginBottom: 0 }}>New here? <Link to="/register">Create an account</Link></p>
       </div>
     </div>

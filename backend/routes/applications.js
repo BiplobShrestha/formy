@@ -64,7 +64,7 @@ router.get(
     const service = getService(app.service);
     const body = { application: serialize(app), service: service ? publicService(service) : null };
     if (req.user.role === "admin" || req.user.role === "officer") {
-      body.match = await buildMatch(app.data, app.linkedRecord);
+      body.match = await buildMatch(app.data, app.linkedRecord, app.service);
     }
     res.json(body);
   })

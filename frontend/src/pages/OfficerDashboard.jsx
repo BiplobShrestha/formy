@@ -13,7 +13,6 @@ export default function OfficerDashboard() {
       <div className="page-head">
         <div>
           <h1>Officer</h1>
-          <p>Applications that the admin has checked and forwarded to you.</p>
         </div>
       </div>
       {data && (

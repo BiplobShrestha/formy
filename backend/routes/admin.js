@@ -69,7 +69,7 @@ router.put(
     app.linkedRecord = record._id;
     addHistory(app, req.user, "Linked citizen record", record.fullName);
     await app.save();
-    res.json({ match: await buildMatch(app.data, app.linkedRecord) });
+    res.json({ match: await buildMatch(app.data, app.linkedRecord, app.service) });
   })
 );
 
@@ -81,17 +81,29 @@ router.post(
     if (!app) return;
     if (app.status !== "pending") return res.status(400).json({ message: "This application is no longer pending" });
 
-    const match = await buildMatch(app.data, app.linkedRecord);
+    const match = await buildMatch(app.data, app.linkedRecord, app.service);
     if (!match.record) {
       return res.status(400).json({
         message: "No citizen record is linked. Search for the record first, or reject this application.",
       });
     }
 
+    const problems = match.docChecks.filter((c) => c.problem);
+    if (problems.length) {
+      return res.status(400).json({ message: problems.map((c) => c.problem).join(" ") + " Reject the application instead." });
+    }
+
+    const confirmed = Array.isArray(req.body.confirmed) ? req.body.confirmed : [];
+    const missing = match.docChecks.filter((c) => !confirmed.includes(c.key));
+    if (missing.length) {
+      return res.status(400).json({ message: "Check every document against its record first: " + missing.map((c) => c.title).join(", ") + "." });
+    }
+
     const note = String(req.body.note || "").trim().slice(0, 300);
     app.status = "forwarded";
     app.linkedRecord = match.record.id;
-    addHistory(app, req.user, "Forwarded to officer", note);
+    const checked = match.docChecks.map((c) => c.title).join(", ");
+    addHistory(app, req.user, "Forwarded to officer", [checked && `Documents checked: ${checked}.`, note].filter(Boolean).join(" "));
     await app.save();
     res.json({ ok: true });
   })

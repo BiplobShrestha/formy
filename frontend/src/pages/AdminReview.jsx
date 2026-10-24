@@ -4,6 +4,7 @@ import { api, downloadFile } from "../api.js";
 import { useLoad } from "../hooks.js";
 import ApplicationView, { History } from "../components/ApplicationView.jsx";
 import RecordCompare from "../components/RecordCompare.jsx";
+import DocChecks from "../components/DocChecks.jsx";
 import Tracker from "../components/Tracker.jsx";
 
 const PRESETS = [
@@ -12,6 +13,8 @@ const PRESETS = [
   "Date of birth does not match the records.",
   "Parents' names do not match the records.",
   "Citizenship photo is too blurry to read.",
+  "A parent's citizenship photo does not match the record.",
+  "The parent could not be found in the records.",
   "A required document is missing or incorrect.",
 ];
 
@@ -24,6 +27,7 @@ export default function AdminReview() {
   const [results, setResults] = useState(null);
   const [note, setNote] = useState("");
   const [reason, setReason] = useState("");
+  const [confirmed, setConfirmed] = useState([]);
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -51,12 +55,13 @@ export default function AdminReview() {
     act(async () => {
       await api(`/api/admin/applications/${id}/record`, { method: "PUT", body: { recordId } });
       setResults(null);
+      setConfirmed([]);
       await reload();
     });
 
   const forward = () =>
     act(async () => {
-      await api(`/api/admin/applications/${id}/forward`, { method: "POST", body: { note } });
+      await api(`/api/admin/applications/${id}/forward`, { method: "POST", body: { note, confirmed } });
       navigate("/admin");
     });
 
@@ -68,6 +73,10 @@ export default function AdminReview() {
 
   const previewLetter = () =>
     act(() => downloadFile(`/api/applications/${id}/letter?type=officer`, `${data.application.ref}-officer-letter.pdf`));
+
+  const toggle = (key) => setConfirmed((c) => (c.includes(key) ? c.filter((k) => k !== key) : [...c, key]));
+  const checks = data && data.match ? data.match.docChecks || [] : [];
+  const allChecked = checks.every((c) => c.record && !c.problem && confirmed.includes(c.key));
 
   const pending = data && data.application.status === "pending";
   const mismatch = data && data.match && data.match.record && data.match.level !== "full";
@@ -140,6 +149,13 @@ export default function AdminReview() {
               )}
             </div>
 
+            {checks.length > 0 && (
+              <div className="panel">
+                <h2>Document checks</h2>
+                <DocChecks checks={checks} application={data.application} confirmed={confirmed} onToggle={pending ? toggle : undefined} />
+              </div>
+            )}
+
             {pending && (
               <div className="panel">
                 <h2>Decision</h2>
@@ -150,7 +166,7 @@ export default function AdminReview() {
                   <input id="note" value={note} onChange={(e) => setNote(e.target.value)} />
                 </div>
                 <div className="row">
-                  <button onClick={forward} disabled={busy || !data.match.record}>
+                  <button onClick={forward} disabled={busy || !data.match.record || !allChecked}>
                     Verify and forward to officer
                   </button>
                   <button className="secondary" onClick={previewLetter} disabled={busy}>
