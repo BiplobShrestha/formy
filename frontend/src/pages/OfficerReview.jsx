@@ -92,13 +92,13 @@ export default function OfficerReview() {
                   <label htmlFor="onote">Note (optional)</label>
                   <input id="onote" value={note} onChange={(e) => setNote(e.target.value)} />
                 </div>
-                <button onClick={verify} disabled={busy}>Verify (approve)</button>
+                <button onClick={verify} disabled={busy}>Approve</button>
 
                 <h3 className="section">Or reject with a reason</h3>
                 <textarea rows={3} value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason shown to the customer" aria-label="Reason for rejection" />
                 <div style={{ marginTop: 10 }}>
                   <button className="danger" onClick={reject} disabled={busy || reason.trim().length < 5}>
-                    Reject (falsify)
+                    Reject
                   </button>
                 </div>
               </div>

@@ -27,7 +27,7 @@ export default function Navbar() {
               </Link>
               {user.role === "admin" && <Link className="nav-link" to="/admin/notices" onClick={close}>Notices</Link>}
               <Link className="nav-link" to="/account" onClick={close}>
-                {user.name} ({user.role})
+                {user.name}
               </Link>
               <button
                 className="secondary"

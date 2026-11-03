@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v6 (v5 plus professionally formatted PDF letters)
+Version: v7 (v6 plus small wording clean up)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -34,7 +34,12 @@ No frontend change is needed, the forms are built from that config.
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
 
-## New in v6
+## New in v7
+
+- Top bar shows only the name, without the role in brackets.
+- Officer buttons are now Approve and Reject.
+
+## v6 additions
 
 - PDF letters redesigned: letterhead with logo and reference block, a status box, tables for application and applicant details, numbered annexures, signature and stamp blocks, page numbers and a footer on every page.
 - Customer letter (one page): approved or not approved, summary table, reason in a box if rejected.
