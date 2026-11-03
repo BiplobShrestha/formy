@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v4 (v3 plus 50 linked citizen records, document checks against parent records, logo slot)
+Version: v6 (v5 plus professionally formatted PDF letters)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -34,7 +34,20 @@ No frontend change is needed, the forms are built from that config.
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
 
-## New in v4
+## New in v6
+
+- PDF letters redesigned: letterhead with logo and reference block, a status box, tables for application and applicant details, numbered annexures, signature and stamp blocks, page numbers and a footer on every page.
+- Customer letter (one page): approved or not approved, summary table, reason in a box if rejected.
+- Officer letter: formal request, details table, annexure list, verification box with the admin signature, then one annexure page per document.
+- All letter layout is in backend/lib/letters.js. Colours are at the top of that file.
+
+## v5 additions
+
+- Logo shown in the top bar, footer, browser tab and on every PDF letter (backend/assets/logo.png and frontend/public/images/logo.png).
+- Approval letter to the customer carries the officer signature and the APPROVED stamp. The officer letter carries the verification signature. Images are in backend/assets. Replace a file there to change it. If a file is missing the letter is made without it.
+- Keep the two copies of logo.png the same (frontend/public/images and backend/assets).
+
+## v4 additions
 
 - 50 citizen records. Ten people are linked to their father and mother records (fatherCitizenshipNumber and motherCitizenshipNumber in backend/seed/data.js).
 - Admin review has a Document checks section: each uploaded certificate is shown beside the stored record of that person. The admin ticks each one. Forward to officer stays disabled until all are ticked. If the parent is not in the records, the admin must reject.
