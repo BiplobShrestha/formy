@@ -125,7 +125,10 @@ input, select, textarea {
 input:hover, select:hover, textarea:hover { border-color: #98a2b3; }
 input:focus, select:focus, textarea:focus { outline: 3px solid #bcd0f7; border-color: var(--primary); }
 .field.invalid input, .field.invalid select { border-color: var(--bad); }
-input[type="file"] { padding: 8px; font-size: 14px; background: var(--paper); border-style: dashed; }
+input[type="file"] { padding: 10px; font-size: 14px; color: var(--muted); background: var(--paper); border: 1.5px dashed var(--line-strong); border-radius: var(--radius); cursor: pointer; }
+input[type="file"]:hover { border-color: var(--primary); background: var(--primary-soft); }
+input[type="file"]::file-selector-button { font: inherit; font-weight: 600; font-size: 14px; color: #fff; background: var(--primary); border: 0; border-radius: var(--radius); padding: 8px 16px; margin-right: 14px; cursor: pointer; transition: background .15s; }
+input[type="file"]::file-selector-button:hover { background: var(--primary-dark, #12326d); }
 textarea { resize: vertical; }
 .form-section { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); padding: 6px 20px 10px; margin: 0 0 16px; min-inline-size: 0; }
 .form-section legend { font-family: var(--font-head); font-weight: 600; font-size: 1.1rem; padding: 0 8px; margin-left: -8px; }

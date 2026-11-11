@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v8 (v7 plus one by one notice popup and image notices)
+Version: v9 (v8 plus a styled file picker button)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -34,7 +34,11 @@ No frontend change is needed, the forms are built from that config.
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
 
-## New in v8
+## New in v9
+
+- The Choose file button on every upload field (forms and notices) now matches the site buttons.
+
+## v8 additions
 
 - Notice popup shows one notice at a time, newest first. The next one appears after the visitor closes the one before. After the last one it stays away for the rest of the browser session.
 - Admin Notices page has a Text or Image switch. An image notice needs a title (only the admin sees it) and a JPG or PNG. Big photos are shrunk in the browser to under 900 KB.
