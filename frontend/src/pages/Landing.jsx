@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { api } from "../api.js";
 import { useAuth, homePathFor } from "../context/AuthContext.jsx";
 import NoticePopup from "../components/NoticePopup.jsx";
+import NoticeCard from "../components/NoticeCard.jsx";
 import PhotoSlot from "../components/PhotoSlot.jsx";
 import Tracker from "../components/Tracker.jsx";
 import Icon from "../components/Icon.jsx";
@@ -127,9 +128,8 @@ export default function Landing() {
           {notices.length === 0 && <p className="muted">No notices right now.</p>}
           <div style={{ maxWidth: 760 }}>
             {notices.map((n) => (
-              <div key={n._id} className="notice">
-                <strong>{n.title}</strong>
-                <p>{n.body}</p>
+              <div key={n._id} className={n.hasImage ? "notice notice-pic" : undefined}>
+                <NoticeCard notice={n} />
               </div>
             ))}
           </div>

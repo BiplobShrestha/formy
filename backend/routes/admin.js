@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const File = require("../models/File");
 const Application = require("../models/Application");
 const CitizenRecord = require("../models/CitizenRecord");
 const Notice = require("../models/Notice");
@@ -139,13 +141,58 @@ router.get(
   })
 );
 
+const imageUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 1024 * 1024, files: 1 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") cb(null, true);
+    else cb(new Error("Only JPG or PNG images are allowed"));
+  },
+});
+
+// Admin uploads the picture for an image notice. The notice itself is created next.
+router.post("/notices/image", (req, res) => {
+  imageUpload.single("file")(req, res, async (err) => {
+    if (err) {
+      const message = err.code === "LIMIT_FILE_SIZE" ? "Image is too large (1 MB maximum)" : err.message;
+      return res.status(400).json({ message });
+    }
+    if (!req.file) return res.status(400).json({ message: "No image received" });
+    try {
+      const file = await File.create({
+        owner: req.user._id,
+        name: req.file.originalname.slice(0, 120),
+        mimeType: req.file.mimetype,
+        size: req.file.size,
+        data: req.file.buffer,
+      });
+      res.status(201).json({ file: { id: String(file._id) } });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ message: "Could not save the image" });
+    }
+  });
+});
+
 router.post(
   "/notices",
   wrap(async (req, res) => {
     const title = String(req.body.title || "").trim();
     const body = String(req.body.body || "").trim();
-    if (!title || !body) return res.status(400).json({ message: "Title and text are both required" });
-    const notice = await Notice.create({ title: title.slice(0, 120), body: body.slice(0, 600), active: true });
+    const imageId = String(req.body.imageId || "").trim();
+    if (!title) return res.status(400).json({ message: "A title is required" });
+    if (body && imageId) return res.status(400).json({ message: "A notice is either text or an image, not both" });
+    if (!body && !imageId) return res.status(400).json({ message: "Add the notice text or an image" });
+
+    let image = "";
+    if (imageId) {
+      const file = validId(imageId) ? await File.findById(imageId) : null;
+      if (!file || String(file.owner) !== String(req.user._id) || !file.mimeType.startsWith("image/")) {
+        return res.status(400).json({ message: "Upload the image again" });
+      }
+      image = String(file._id);
+    }
+    const notice = await Notice.create({ title: title.slice(0, 120), body: body.slice(0, 600), image, active: true });
     res.status(201).json({ notice });
   })
 );
@@ -158,7 +205,7 @@ router.put(
     if (!notice) return res.status(404).json({ message: "Notice not found" });
 
     if (req.body.title !== undefined) notice.title = String(req.body.title).trim().slice(0, 120) || notice.title;
-    if (req.body.body !== undefined) notice.body = String(req.body.body).trim().slice(0, 600) || notice.body;
+    if (req.body.body !== undefined && !notice.image) notice.body = String(req.body.body).trim().slice(0, 600) || notice.body;
     if (req.body.active !== undefined) notice.active = !!req.body.active;
     await notice.save();
     res.json({ notice });
@@ -169,6 +216,8 @@ router.delete(
   "/notices/:id",
   wrap(async (req, res) => {
     if (!validId(req.params.id)) return res.status(404).json({ message: "Notice not found" });
+    const notice = await Notice.findById(req.params.id);
+    if (notice && notice.image && validId(notice.image)) await File.deleteOne({ _id: notice.image });
     await Notice.deleteOne({ _id: req.params.id });
     res.json({ ok: true });
   })

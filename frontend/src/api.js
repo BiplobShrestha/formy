@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+export const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 export function getToken() {
   return localStorage.getItem("formy_token");
@@ -43,6 +43,15 @@ export async function upload(file) {
   const form = new FormData();
   form.append("file", file);
   const res = await request("/api/files", { method: "POST", headers: authHeaders(), body: form });
+  if (!res.ok) throw await readError(res);
+  return res.json();
+}
+
+// Admin: upload the picture for an image notice
+export async function uploadNoticeImage(file) {
+  const form = new FormData();
+  form.append("file", file);
+  const res = await request("/api/admin/notices/image", { method: "POST", headers: authHeaders(), body: form });
   if (!res.ok) throw await readError(res);
   return res.json();
 }
