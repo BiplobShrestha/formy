@@ -2,6 +2,7 @@ import { useState } from "react";
 import { upload } from "../api.js";
 import { compressImage } from "../compress.js";
 import SecureImage from "./SecureImage.jsx";
+import FileDrop from "./FileDrop.jsx";
 
 const PHONE_RE = /^9[78]\d{8}$/;
 
@@ -33,10 +34,7 @@ export default function DynamicForm({ service, initial, submitLabel, onSubmit })
     setErrors((p) => ({ ...p, [name]: undefined }));
   }
 
-  async function pickFile(f, e) {
-    const file = e.target.files[0];
-    e.target.value = "";
-    if (!file) return;
+  async function pickFile(f, file) {
     setBusyField(f.name);
     setErrors((p) => ({ ...p, [f.name]: undefined }));
     try {
@@ -120,19 +118,15 @@ export default function DynamicForm({ service, initial, submitLabel, onSubmit })
             ))}
           </select>
         ) : f.type === "file" ? (
-          <div className="upload">
+          <FileDrop
+            id={f.name}
+            has={!!values[f.name]}
+            busy={busyField === f.name}
+            onFile={(file) => pickFile(f, file)}
+            onRemove={() => setValue(f.name, "")}
+          >
             {values[f.name] && <SecureImage fileId={values[f.name]} alt={f.label} />}
-            <div>
-              <input
-                id={f.name}
-                type="file"
-                accept="image/png,image/jpeg"
-                onChange={(e) => pickFile(f, e)}
-                disabled={busyField === f.name}
-              />
-              {busyField === f.name && <div className="muted">Uploading...</div>}
-            </div>
-          </div>
+          </FileDrop>
         ) : (
           <input
             id={f.name}

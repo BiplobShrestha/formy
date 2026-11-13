@@ -15,7 +15,7 @@ app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
     app: "Formy",
-    version: "v9",
+    version: "v10",
     db: mongoose.connection.readyState === 1 ? "connected" : "not connected",
   });
 });

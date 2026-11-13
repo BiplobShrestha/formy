@@ -23,7 +23,7 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Formy API is running (v9)");
+  res.send("Formy API is running (v10)");
 });
 
 app.use("/api/auth", authRoutes);

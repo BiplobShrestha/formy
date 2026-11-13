@@ -325,3 +325,21 @@ tbody tr:hover td { background: #fafbfd; }
 .type-switch button.on { background: var(--primary); color: #fff; }
 .notice-preview { max-width: 280px; max-height: 200px; border: 1px solid var(--line); border-radius: var(--radius); display: block; margin-top: 8px; }
 .notice .thumb { max-height: 140px; }
+
+/* ---------- Upload box ---------- */
+.drop { position: relative; border: 1.5px dashed var(--line-strong); border-radius: var(--radius-lg); background: var(--paper); transition: border-color .15s, background .15s; }
+.drop:hover, .drop-over { border-color: var(--primary); background: var(--primary-soft); }
+.drop:focus-within { outline: 2px solid var(--primary); outline-offset: 2px; }
+.drop input[type="file"] { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; opacity: 0; overflow: hidden; }
+.drop-empty { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 16px; cursor: pointer; color: var(--primary); text-align: center; }
+.drop-title { font-weight: 600; color: var(--ink); }
+.drop-sub { font-size: 13px; color: var(--muted); }
+.drop-status { padding: 26px 16px; text-align: center; color: var(--muted); }
+.drop-has { border-style: solid; background: #fff; }
+.drop-body { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px; flex-wrap: wrap; }
+.drop-preview { min-width: 0; }
+.drop-preview .thumb, .drop-preview .notice-preview { margin: 0; max-height: 120px; max-width: 220px; }
+.drop-actions { display: flex; gap: 8px; }
+.drop-btn { display: inline-flex; align-items: center; font-weight: 600; font-size: 15px; padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--line-strong); background: var(--surface); color: var(--primary); cursor: pointer; }
+.drop-btn:hover { background: var(--primary-soft); border-color: var(--primary); }
+.field.invalid .drop { border-color: var(--bad); }

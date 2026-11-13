@@ -4,6 +4,7 @@ import { api, uploadNoticeImage } from "../api.js";
 import { compressImage } from "../compress.js";
 import { useLoad } from "../hooks.js";
 import SecureImage from "../components/SecureImage.jsx";
+import FileDrop from "../components/FileDrop.jsx";
 
 export default function AdminNotices() {
   const { data, error, loading, reload } = useLoad(() => api("/api/admin/notices"));
@@ -32,10 +33,7 @@ export default function AdminNotices() {
     setPreview("");
   }
 
-  async function pickImage(e) {
-    const file = e.target.files[0];
-    e.target.value = "";
-    if (!file) return;
+  async function pickImage(file) {
     setMsg("");
     setUploading(true);
     try {
@@ -91,10 +89,10 @@ export default function AdminNotices() {
             </div>
           ) : (
             <div className="field">
-              <label htmlFor="ni">Image (JPG or PNG)</label>
-              <input id="ni" type="file" accept="image/jpeg,image/png" onChange={pickImage} />
-              {uploading && <span className="muted">Uploading...</span>}
-              {preview && <img className="notice-preview" src={preview} alt="Notice preview" />}
+              <label htmlFor="ni">Image</label>
+              <FileDrop id="ni" has={!!imageId} busy={uploading} onFile={pickImage} onRemove={clearImage}>
+                {preview && <img className="notice-preview" src={preview} alt="Notice preview" />}
+              </FileDrop>
             </div>
           )}
           <div><button disabled={!ready || uploading}>Add notice</button></div>

@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v9 (v8 plus a styled file picker button)
+Version: v10 (v9 plus a proper upload box)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -34,7 +34,13 @@ No frontend change is needed, the forms are built from that config.
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
 
-## New in v9
+## New in v10
+
+- Every upload field (application forms and the Notices page) is now an upload box. Click it to choose a photo, or drag a photo onto it.
+- After choosing, the box shows a preview with Replace and Remove buttons.
+- No backend changes, no new environment variables.
+
+## v9 additions
 
 - The Choose file button on every upload field (forms and notices) now matches the site buttons.
 
