@@ -7,7 +7,7 @@ import Tracker from "../components/Tracker.jsx";
 
 export default function ApplicationDetail() {
   const { id } = useParams();
-  const { data, error, loading } = useLoad(() => api(`/api/applications/${id}`), [id]);
+  const { data, error, loading } = useLoad(() => api(`/api/applications/${id}`), [id], { poll: 15000 });
   const [dlError, setDlError] = useState("");
 
   async function download() {

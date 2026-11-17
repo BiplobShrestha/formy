@@ -7,7 +7,7 @@ import StatCards from "../components/StatCards.jsx";
 
 export default function CustomerDashboard() {
   const { user } = useAuth();
-  const { data, error, loading } = useLoad(() => api("/api/applications/mine"));
+  const { data, error, loading } = useLoad(() => api("/api/applications/mine"), [], { poll: 15000 });
   const apps = data ? data.applications : [];
   const count = (...s) => apps.filter((a) => s.includes(a.status)).length;
 

@@ -15,6 +15,9 @@ export default function AdminNotices() {
   const [preview, setPreview] = useState("");
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState("");
+  const [editId, setEditId] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editBody, setEditBody] = useState("");
 
   useEffect(() => () => preview && URL.revokeObjectURL(preview), [preview]);
 
@@ -59,6 +62,19 @@ export default function AdminNotices() {
       clearImage();
     });
   };
+
+  function startEdit(n) {
+    setEditId(n._id);
+    setEditTitle(n.title);
+    setEditBody(n.body || "");
+  }
+
+  const saveEdit = (n) =>
+    run(async () => {
+      const payload = n.image ? { title: editTitle } : { title: editTitle, body: editBody };
+      await api(`/api/admin/notices/${n._id}`, { method: "PUT", body: payload });
+      setEditId("");
+    });
 
   const ready = title.trim() && (kind === "text" ? body.trim() : imageId);
 
@@ -105,22 +121,44 @@ export default function AdminNotices() {
       {data &&
         data.notices.map((n) => (
           <div key={n._id} className="notice">
-            <div className="row between">
-              <strong>{n.title}</strong>
-              <span className={n.active ? "badge badge-approved" : "badge badge-pending"}>{n.active ? "Active" : "Hidden"}</span>
-            </div>
-            {n.image ? <div style={{ margin: "8px 0" }}><SecureImage fileId={n.image} alt={n.title} /></div> : <p>{n.body}</p>}
-            <div className="row">
-              <button className="secondary" onClick={() => run(() => api(`/api/admin/notices/${n._id}`, { method: "PUT", body: { active: !n.active } }))}>
-                {n.active ? "Hide" : "Show"}
-              </button>
-              <button
-                className="secondary"
-                onClick={() => window.confirm("Delete this notice?") && run(() => api(`/api/admin/notices/${n._id}`, { method: "DELETE" }))}
-              >
-                Delete
-              </button>
-            </div>
+            {editId === n._id ? (
+              <div>
+                <div className="field">
+                  <label htmlFor="et">Title</label>
+                  <input id="et" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />
+                </div>
+                {!n.image && (
+                  <div className="field">
+                    <label htmlFor="eb">Text</label>
+                    <textarea id="eb" rows={3} value={editBody} onChange={(e) => setEditBody(e.target.value)} />
+                  </div>
+                )}
+                <div className="row">
+                  <button disabled={!editTitle.trim() || (!n.image && !editBody.trim())} onClick={() => saveEdit(n)}>Save</button>
+                  <button className="secondary" onClick={() => setEditId("")}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="row between">
+                  <strong>{n.title}</strong>
+                  <span className={n.active ? "badge badge-approved" : "badge badge-pending"}>{n.active ? "Active" : "Hidden"}</span>
+                </div>
+                {n.image ? <div style={{ margin: "8px 0" }}><SecureImage fileId={n.image} alt={n.title} /></div> : <p>{n.body}</p>}
+                <div className="row">
+                  <button className="secondary" onClick={() => startEdit(n)}>Edit</button>
+                  <button className="secondary" onClick={() => run(() => api(`/api/admin/notices/${n._id}`, { method: "PUT", body: { active: !n.active } }))}>
+                    {n.active ? "Hide" : "Show"}
+                  </button>
+                  <button
+                    className="secondary"
+                    onClick={() => window.confirm("Delete this notice?") && run(() => api(`/api/admin/notices/${n._id}`, { method: "DELETE" }))}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         ))}
     </div>

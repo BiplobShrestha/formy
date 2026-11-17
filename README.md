@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v10 (v9 plus a proper upload box)
+Version: v11, final (v10 plus tracking, live refresh, notice editing and the office seal)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -34,7 +34,18 @@ No frontend change is needed, the forms are built from that config.
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
 
-## New in v10
+## New in v11 (final)
+
+- Track an application: the landing page has a box where anyone can enter a reference number (FRM-YYYYMMDD-XXXX) and see the service and status. No personal details are shown. Limited to 20 lookups a minute per address.
+- Live refresh: the customer dashboard and application page, the admin list and the officer list update by themselves every 15 to 20 seconds while the tab is open. No reload needed.
+- Admin can edit a notice (title and text) from the Notices page. Image notices keep their picture and only the title changes.
+- Office seal: a round seal (backend/assets/seal.png) now appears between the signature and the APPROVED stamp on the approval letter. To use your own seal, replace that file and keep the name.
+- Fixed: /api/health was returning Not found because the 404 handler caught it first. It now returns status, version and database state.
+- Hardening: nosniff header, no x-powered-by header, JSON bodies limited to 200 KB.
+- Seeded notices now have a fixed order.
+- No new environment variables.
+
+## v10 additions
 
 - Every upload field (application forms and the Notices page) is now an upload box. Click it to choose a photo, or drag a photo onto it.
 - After choosing, the box shows a preview with Replace and Remove buttons.

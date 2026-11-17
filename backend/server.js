@@ -11,15 +11,6 @@ if (!MONGODB_URI || !JWT_SECRET) {
 const app = require("./app");
 const seed = require("./seed/seed");
 
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "ok",
-    app: "Formy",
-    version: "v10",
-    db: mongoose.connection.readyState === 1 ? "connected" : "not connected",
-  });
-});
-
 const PORT = process.env.PORT || 5000;
 
 mongoose

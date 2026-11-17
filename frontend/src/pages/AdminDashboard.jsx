@@ -17,7 +17,8 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("pending");
   const { data, error, loading } = useLoad(
     () => api(`/api/admin/applications${tab === "all" ? "" : `?status=${tab}`}`),
-    [tab]
+    [tab],
+    { poll: 20000 }
   );
 
   return (

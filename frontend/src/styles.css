@@ -343,3 +343,8 @@ tbody tr:hover td { background: #fafbfd; }
 .drop-btn { display: inline-flex; align-items: center; font-weight: 600; font-size: 15px; padding: 10px 16px; border-radius: var(--radius); border: 1px solid var(--line-strong); background: var(--surface); color: var(--primary); cursor: pointer; }
 .drop-btn:hover { background: var(--primary-soft); border-color: var(--primary); }
 .field.invalid .drop { border-color: var(--bad); }
+
+/* ---------- Track by reference ---------- */
+.track { max-width: 560px; }
+.track .box { margin-top: 12px; }
+.track-result { position: static; width: auto; margin-top: 14px; box-shadow: none; }

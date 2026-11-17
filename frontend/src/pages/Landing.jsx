@@ -8,6 +8,7 @@ import PhotoSlot from "../components/PhotoSlot.jsx";
 import Tracker from "../components/Tracker.jsx";
 import Icon from "../components/Icon.jsx";
 import StatusBadge from "../components/StatusBadge.jsx";
+import TrackBox from "../components/TrackBox.jsx";
 
 const steps = [
   "Create an account with your name, phone number and a password.",
@@ -136,7 +137,17 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="band band-white">
+      <section className="band band-white" id="track">
+        <div className="band-inner">
+          <div className="band-head">
+            <h2>Track an application</h2>
+            <p>Enter the reference number you received when you submitted.</p>
+          </div>
+          <TrackBox />
+        </div>
+      </section>
+
+      <section className="band">
         <div className="band-inner faq">
           <div className="band-head">
             <h2>Common questions</h2>

@@ -205,6 +205,13 @@ function signBlock(doc, { name, title, stamp }) {
   const stampImg = stamp ? asset("stamp-approved.png") : null;
   if (sign) doc.image(sign, M, y, { width: 120 });
   if (stampImg) doc.image(stampImg, doc.page.width - M - 190, y - 8, { width: 190 });
+  const seal = stamp ? asset("seal.png") : null;
+  if (seal) {
+    doc.save();
+    doc.opacity(0.9);
+    doc.image(seal, M + 150, y - 6, { width: 86 });
+    doc.restore();
+  }
   doc.x = M;
   doc.y = y + 44;
   doc.font("Helvetica-Bold").fontSize(10.5).fillColor(C.ink).text(name, M, doc.y);

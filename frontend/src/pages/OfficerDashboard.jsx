@@ -6,7 +6,7 @@ import StatCards from "../components/StatCards.jsx";
 
 export default function OfficerDashboard() {
   const [tab, setTab] = useState("pending");
-  const { data, error, loading } = useLoad(() => api(`/api/officer/applications?tab=${tab}`), [tab]);
+  const { data, error, loading } = useLoad(() => api(`/api/officer/applications?tab=${tab}`), [tab], { poll: 20000 });
 
   return (
     <div className="page wide">

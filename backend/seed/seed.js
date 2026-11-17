@@ -28,7 +28,8 @@ async function seed() {
   console.log(`Citizen records synced (${citizens.length})`);
 
   if ((await Notice.countDocuments()) === 0) {
-    await Notice.insertMany(notices);
+    // Spread the creation times so the first notice in the list is the newest
+    await Notice.insertMany(notices.map((n, i) => ({ ...n, createdAt: new Date(Date.now() - i * 1000) })));
     console.log("Seeded notices");
   }
 }
