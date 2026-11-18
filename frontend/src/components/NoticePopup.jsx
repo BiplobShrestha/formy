@@ -27,6 +27,15 @@ export default function NoticePopup() {
       .catch(() => {});
   }, []);
 
+  // a picture that never loads is skipped so the visitor never sees a broken box
+  function skip() {
+    if (index + 1 < notices.length) {
+      setIndex(index + 1);
+      return;
+    }
+    close();
+  }
+
   function close() {
     if (index + 1 < notices.length) {
       setIndex(index + 1);
@@ -46,7 +55,7 @@ export default function NoticePopup() {
   return (
     <div className="overlay">
       <div className={n.hasImage ? "modal modal-image" : "modal"} role="dialog" aria-modal="true">
-        <NoticeCard key={n._id} notice={n} inModal />
+        <NoticeCard key={n._id} notice={n} inModal onFail={skip} />
         <button onClick={close}>Close</button>
       </div>
     </div>

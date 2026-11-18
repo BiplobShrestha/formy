@@ -30,14 +30,14 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "200kb" }));
 
 app.get("/", (req, res) => {
-  res.send("Formy API is running (v11)");
+  res.send("Formy API is running (v12)");
 });
 
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
     app: "Formy",
-    version: "v11",
+    version: "v12",
     db: mongoose.connection.readyState === 1 ? "connected" : "not connected",
   });
 });

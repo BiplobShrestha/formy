@@ -2,7 +2,7 @@
 
 E-governance service application portal (MERN).
 
-Version: v11, final (v10 plus tracking, live refresh, notice editing and the office seal)
+Version: v12, final (v11 plus a borderless notice popup, picture retry and WebP uploads)
 
 - backend: Express + MongoDB (deploys to Render)
 - frontend: React + Vite (deploys to Vercel)
@@ -34,7 +34,15 @@ No frontend change is needed, the forms are built from that config.
 - Uploaded photos are stored in MongoDB (images only, shrunk in the browser first).
 - Render free tier sleeps when idle, so the first request can take about a minute.
 
-## New in v11 (final)
+## New in v12 (final)
+
+- Image notices now fill the popup. No white frame or side space: the popup is exactly as wide as the picture.
+- Posters with a plain white or coloured margin are trimmed automatically when uploaded on the Notices page.
+- A notice picture that fails to load is retried three times, then skipped. Visitors never see a broken image box.
+- Uploads accept WebP as well as JPG and PNG. The browser converts everything to JPG before it is sent.
+- No backend changes except the version number. No new environment variables.
+
+## v11 additions
 
 - Track an application: the landing page has a box where anyone can enter a reference number (FRM-YYYYMMDD-XXXX) and see the service and status. No personal details are shown. Limited to 20 lookups a minute per address.
 - Live refresh: the customer dashboard and application page, the admin list and the officer list update by themselves every 15 to 20 seconds while the tab is open. No reload needed.

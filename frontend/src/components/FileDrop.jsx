@@ -29,7 +29,7 @@ export default function FileDrop({ id, has, busy, onFile, onRemove, children }) 
       onDragLeave={() => setDragging(false)}
       onDrop={drop}
     >
-      <input id={id} type="file" accept="image/png,image/jpeg" onChange={pick} disabled={busy} />
+      <input id={id} type="file" accept="image/png,image/jpeg,image/webp" onChange={pick} disabled={busy} />
 
       {busy && <div className="drop-status">Uploading...</div>}
 
@@ -41,7 +41,7 @@ export default function FileDrop({ id, has, busy, onFile, onRemove, children }) 
             <path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" />
           </svg>
           <span className="drop-title">Choose a photo or drop it here</span>
-          <span className="drop-sub">JPG or PNG</span>
+          <span className="drop-sub">JPG, PNG or WebP</span>
         </label>
       )}
 

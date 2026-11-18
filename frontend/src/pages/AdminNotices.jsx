@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, uploadNoticeImage } from "../api.js";
-import { compressImage } from "../compress.js";
+import { compressImage, trimBorders } from "../compress.js";
 import { useLoad } from "../hooks.js";
 import SecureImage from "../components/SecureImage.jsx";
 import FileDrop from "../components/FileDrop.jsx";
@@ -40,7 +40,7 @@ export default function AdminNotices() {
     setMsg("");
     setUploading(true);
     try {
-      const small = await compressImage(file, 900 * 1024);
+      const small = await compressImage(await trimBorders(file), 900 * 1024);
       const { file: saved } = await uploadNoticeImage(small);
       setImageId(saved.id);
       setPreview(URL.createObjectURL(small));
